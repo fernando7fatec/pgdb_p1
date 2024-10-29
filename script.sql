@@ -21,6 +21,27 @@ CREATE TABLE students_performance(
 -- ----------------------------------------------------------------
 -- 2 Resultado em função da formação dos pais
 --escreva a sua solução aqui
+DO $$
+DECLARE
+    alunos_aprovados_c_pais_phd REFCURSOR;
+    numero_alunos INT;
+    nome_tabela varchar(100) := 'students_performance';
+BEGIN
+    OPEN alunos_aprovados_c_pais_phd FOR EXECUTE
+    format
+    (
+        'SELECT count(id) from  %s WHERE father_edu = 6 or mother_edu = 6'
+        ,
+        nome_tabela
+    );
+    LOOP
+        FETCH alunos_aprovados_c_pais_phd INTO numero_alunos;
+        EXIT WHEN NOT FOUND;
+        RAISE NOTICE '%',numero_alunos;
+    END LOOP;
+    CLOSE alunos_aprovados_c_pais_phd;
+END;
+$$
 
 
 -- ----------------------------------------------------------------
