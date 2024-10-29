@@ -79,4 +79,28 @@ $$
 -- 5. Limpeza de valores NULL
 --escreva a sua solução aqui
 
+DO $$
+DECLARE
+    cursor_delete REFCURSOR;
+    tupla RECORD;
+    nome_tabela varchar(100) := 'students_performance';
+BEGIN
+    OPEN cursor_delete SCROLL FOR
+    SELECT * FROM students_performance;
+    LOOP
+        FETCH cursor_delete INTO TUPLA;
+        EXIT WHEN NOT FOUND;
+        IF tupla.* IS NULL THEN
+            DELETE FROM students_performance WHERE CURRENT OF cursor_delete;
+        END IF;
+    END LOOP;
+    LOOP
+        FETCH BACKWARD FROM cursor_delete INTO tupla;
+        EXIT WHEN NOT FOUND;
+        RAISE NOTICE '%', tupla;
+    END LOOP;
+    CLOSE cursor_delete;
+END;
+$$
+
 -- ----------------------------------------------------------------
